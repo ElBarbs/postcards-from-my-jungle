@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Yeseva+One&display=swap"
+      rel="stylesheet"
+    />
+
+    <title>Postcards from My Jungle</title>
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100svh;
+        margin: 0;
+        background-color: darkolivegreen;
+        font-family: "Yeseva One", serif;
+        font-weight: 400;
+        font-style: normal;
+      }
+
+      #postcard {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        background-color: white;
+        padding: 1rem;
+        box-shadow: 0 0 1rem rgba(0, 0, 0, 0.5);
+      }
+
+      #slideshow {
+        width: 600px;
+        height: 400px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+      }
+
+      #slideshow img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      #caption {
+        text-align: center;
+        font-size: 1.5rem;
+      }
+
+      #startButton {
+        font-family: "Yeseva One", serif;
+        padding: 0.5rem 1rem;
+        font-size: 1.5rem;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+
+      @media (max-width: 600px) {
+        #slideshow {
+          width: 100%;
+          height: auto;
+          aspect-ratio: 3 / 2;
+        }
+
+        #slideshow img {
+          width: 100%;
+          height: auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="postcard">
+      <div id="slideshow">
+        <img id="slideshowImage" src="" alt="Animal Image" />
+      </div>
+      <div id="caption"></div>
+    </div>
+
+    <button id="startButton">You've got mail!</button>
+
+    <script>
+      const phrases = [
+        "Grrr-tii shruk-ka!",
+        "Zwaakk griii krrrr-shh!",
+        "Prrr-chhhh burk wrooo!",
+        "Braaark vree-wooo?",
+        "Hhmmm-tok slikk-churr!",
+        "Truuu-paa wrrr-vii!",
+        "Snrrrk-rah kree-vah!",
+        "Shhheek rroo-vahhh!",
+        "Fruuumm-ggrr kraaakkk!",
+        "Whaaak plrrrrh-tu!",
+        "Grraaakk-brrr huhh!",
+        "Rrraah-pwaa jjjjrr!",
+        "Zzzrrk ploo-rahh!",
+        "Lrrrrrr fraka-whooo!",
+        "Chhhrmm-shkraaak yrrr!",
+        "Rrhh-tkrk-viii?",
+      ];
+
+      let images = [];
+      let sounds = [];
+      let currentIndex = 0;
+      let audio = null;
+
+      function generateFilePaths() {
+        const imageFiles = 50; // Number of images.
+        const soundFiles = 4; // Number of sounds.
+
+        for (let i = 0; i < imageFiles; i++) {
+          const index = String(i).padStart(2, "0");
+          images.push(`animals/animal_${index}.png`);
+        }
+
+        for (let i = 0; i < soundFiles; i++) {
+          const index = String(i).padStart(2, "0");
+          sounds.push(`sounds/animal_${index}.wav`);
+        }
+      }
+
+      function showNextImage() {
+        const slideshowImage = document.getElementById("slideshowImage");
+        const caption = document.getElementById("caption");
+
+        // Show the next image.
+        slideshowImage.src = images[currentIndex];
+
+        // Display a random phrase.
+        const randomText = phrases[Math.floor(Math.random() * phrases.length)];
+        caption.textContent = randomText;
+
+        // Update the index for the next image.
+        currentIndex = (currentIndex + 1) % images.length;
+      }
+
+      function playAllSounds() {
+        sounds.forEach((soundFile) => {
+          const audio = new Audio(soundFile);
+          audio.loop = true;
+
+          audio.play().catch((error) => {
+            console.log("Audio playback failed: ", error);
+          });
+        });
+      }
+
+      function startSlideshow() {
+        // Show the first image.
+        showNextImage();
+
+        // Change image every 5 seconds.
+        setInterval(showNextImage, 5000);
+
+        // Start playing sounds.
+        playAllSounds();
+
+        // Show postcard.
+        document.getElementById("postcard").style.display = "flex";
+      }
+
+      window.onload = () => {
+        generateFilePaths();
+
+        document.getElementById("startButton").addEventListener("click", () => {
+          startSlideshow();
+          document.getElementById("startButton").style.display = "none";
+        });
+      };
+    </script>
+  </body>
+</html>
